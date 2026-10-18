@@ -1,0 +1,761 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1f5f4a">
+<title>יועץ הנגרות</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<style>
+:root{--bg:#f4f2ee;--card:#fff;--ink:#1d1d1f;--muted:#6b6b70;--line:#e3dfd8;--brand:#1f5f4a;--brand-ink:#fff;--brand2:#e6f0eb;
+--g:#1e8e3e;--y:#c78b00;--r:#d93025;--u:#e8710a;--o:#5f6bd6;--n:#8a9096;
+--gbg:#e6f4ea;--ybg:#fdf3d4;--rbg:#fce8e6;--ubg:#feefe3;--obg:#eceefd;--nbg:#eef0f2}
+@media (prefers-color-scheme:dark){:root{--bg:#141516;--card:#1f2123;--ink:#ececec;--muted:#a0a0a5;--line:#36393c;--brand:#4fb08b;--brand-ink:#0d1f18;--brand2:#1b2d26;
+--gbg:#173322;--ybg:#382e10;--rbg:#3d1b18;--ubg:#3d2612;--obg:#23274a;--nbg:#2a2c2e}}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.45 system-ui,"Segoe UI",Roboto,"Noto Sans Hebrew",Arial,sans-serif;padding-bottom:calc(78px + env(safe-area-inset-bottom))}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+main{max-width:680px;margin:0 auto;padding:12px 14px}
+h1,h2,h3{margin:0;line-height:1.25}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px}
+.muted{color:var(--muted)}.small{font-size:.85rem}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.grow{flex:1}
+.btn{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:10px 14px;min-height:46px;display:inline-flex;align-items:center;justify-content:center;gap:6px;text-decoration:none;color:inherit}
+.btn.pri{background:var(--brand);color:var(--brand-ink);border-color:var(--brand);font-weight:700}
+.btn.big{width:100%;min-height:60px;font-size:1.15rem}
+.btn.warn{color:var(--r)}
+.btn.sm{min-height:38px;padding:6px 10px;font-size:.9rem}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+input[type=text],input[type=tel],input[type=number],input[type=date],textarea,select{width:100%;border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:10px 12px;min-height:46px}
+textarea{min-height:70px;resize:vertical}
+label.f{display:block;margin-bottom:10px}label.f span{display:block;font-size:.85rem;color:var(--muted);margin-bottom:3px}
+/* grades */
+.g-g{--c:var(--g);--cb:var(--gbg)}.g-y{--c:var(--y);--cb:var(--ybg)}.g-r{--c:var(--r);--cb:var(--rbg)}
+.g-u{--c:var(--u);--cb:var(--ubg)}.g-o{--c:var(--o);--cb:var(--obg)}.g-n{--c:var(--n);--cb:var(--nbg)}.g-x{--c:var(--line);--cb:var(--card)}
+.dot{width:12px;height:12px;border-radius:50%;background:var(--c);flex:none;display:inline-block}
+.opt{display:inline-flex;align-items:center;gap:7px;border:2px solid var(--line);background:var(--card);border-radius:999px;padding:7px 13px;min-height:44px;font-size:.95rem;text-align:start}
+.opt.sel{border-color:var(--c);background:var(--cb);font-weight:700}
+.opt.big{display:flex;width:100%;border-radius:14px;min-height:58px;font-size:1.08rem;padding:10px 14px;margin-bottom:8px}
+.opt.big .dot{width:16px;height:16px}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin:8px 0}
+.tag{font-size:.75rem;border-radius:999px;padding:1px 8px;background:var(--rbg);color:var(--r);font-weight:700;white-space:nowrap}
+.tip{background:var(--brand2);border-radius:10px;padding:10px 12px;margin:8px 0;font-size:.95rem}
+.ibtn{border:1px solid var(--line);background:var(--card);border-radius:50%;width:32px;height:32px;font-weight:700;color:var(--brand);flex:none}
+/* nav */
+nav{position:fixed;bottom:0;inset-inline:0;background:var(--card);border-top:1px solid var(--line);display:flex;padding-bottom:env(safe-area-inset-bottom);z-index:10}
+nav button{flex:1;border:0;background:none;padding:8px 2px 9px;display:flex;flex-direction:column;align-items:center;gap:1px;font-size:.78rem;color:var(--muted);min-height:62px}
+nav button b{font-size:1.35rem;font-weight:400;line-height:1.2}
+nav button.on{color:var(--brand);font-weight:700}
+/* home */
+.proj h1{font-size:1.35rem}
+.score{display:flex;gap:14px;align-items:center}
+.ring{width:108px;height:108px;flex:none}
+.ring .rbg{fill:none;stroke:var(--line);stroke-width:10}
+.ring .rfg{fill:none;stroke-width:10;stroke-linecap:round}
+.ring text{font-size:22px;font-weight:800;fill:var(--ink)}
+.counts{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.cnt{display:inline-flex;align-items:center;gap:5px;background:var(--cb);border-radius:999px;padding:2px 10px;font-size:.88rem;font-weight:700}
+.bar{height:10px;border-radius:5px;background:var(--line);overflow:hidden;margin:6px 0}
+.bar i{display:block;height:100%;background:var(--brand);border-radius:5px}
+.list{list-style:none;margin:6px 0 0;padding:0}
+.list li{border-top:1px solid var(--line)}
+.list button{width:100%;background:none;border:0;text-align:start;padding:10px 2px;display:flex;gap:8px;align-items:flex-start}
+.list button .dot{margin-top:6px}
+h2.sec{font-size:1.05rem;margin-bottom:4px}
+/* spec */
+details.cat{background:var(--card);border:1px solid var(--line);border-radius:16px;margin-bottom:10px;overflow:hidden}
+details.cat>summary{list-style:none;padding:14px;display:flex;align-items:center;gap:10px;font-weight:700;font-size:1.05rem;cursor:pointer}
+details.cat>summary::-webkit-details-marker{display:none}
+details.cat>summary::after{content:"▾";margin-inline-start:auto;color:var(--muted);transition:transform .2s}
+details.cat[open]>summary::after{transform:rotate(180deg)}
+.badge{font-size:.8rem;border-radius:999px;padding:2px 9px;background:var(--cb);color:var(--c);font-weight:800}
+.item{border-top:1px solid var(--line);padding:12px 14px;border-inline-start:5px solid var(--c)}
+.item .q{color:var(--muted);font-size:.92rem}
+.item input{min-height:42px}
+/* meeting */
+.mtop{display:flex;gap:10px;align-items:center;margin-bottom:6px}
+.mtop select{flex:1}
+.mcount{font-weight:800;white-space:nowrap}
+.mcard{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin-top:8px;touch-action:pan-y}
+.mcat{color:var(--brand);font-weight:700;font-size:.9rem;display:flex;gap:8px;align-items:center}
+.mq{font-size:1.45rem;margin:8px 0 6px}
+.mextra{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.mextra .opt{justify-content:center;border-radius:14px;min-height:52px}
+.mnav{display:grid;grid-template-columns:1fr 2fr;gap:8px;margin-top:12px}
+.empty{text-align:center;padding:30px 10px}
+/* pay */
+.pay{border-top:1px solid var(--line);padding:10px 0}
+.pay:first-of-type{border-top:0}
+.paid{background:var(--gbg);color:var(--g);border-color:var(--g);font-weight:700}
+.alert{border-radius:12px;padding:10px 12px;font-weight:700;margin:8px 0}
+.alert.r{background:var(--rbg);color:var(--r)}.alert.g{background:var(--gbg);color:var(--g)}
+.drow{display:grid;grid-template-columns:auto 1fr auto;grid-template-areas:"cb t x" "cb d x";gap:6px;align-items:center;border-top:1px solid var(--line);padding:8px 0}
+.drow>input[type=checkbox]{grid-area:cb}.drow>input[type=text]{grid-area:t}.drow>input[type=date]{grid-area:d}.drow>.x{grid-area:x}
+.drow:first-child{border-top:0}
+.drow input[type=checkbox]{width:26px;height:26px;accent-color:var(--brand)}
+.drow.done input[type=text]{text-decoration:line-through;color:var(--muted)}
+.x{border:0;background:none;color:var(--muted);font-size:1.2rem;width:34px;height:40px}
+/* punch */
+.pitem{display:flex;gap:10px;align-items:flex-start}
+.thumb{width:76px;height:76px;border-radius:10px;object-fit:cover;background:var(--line);flex:none;border:0;padding:0}
+.pitem.done .ptext{text-decoration:line-through;color:var(--muted)}
+.prev{max-width:120px;max-height:120px;border-radius:10px;display:block;margin:6px 0}
+/* modal & toast */
+#modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:flex-end;justify-content:center;z-index:30}
+#modal.on{display:flex}
+#modal .sheet{background:var(--card);width:100%;max-width:680px;border-radius:18px 18px 0 0;padding:16px 16px calc(16px + env(safe-area-inset-bottom));max-height:92vh;overflow:auto}
+#modal img.full{width:100%;border-radius:12px}
+#toast{position:fixed;bottom:90px;inset-inline:16px;margin:auto;max-width:420px;background:#222;color:#fff;border-radius:12px;padding:12px 14px;text-align:center;opacity:0;transform:translateY(10px);transition:.25s;pointer-events:none;z-index:40}
+#toast.on{opacity:1;transform:none}
+#print{display:none}
+@media print{
+  body{background:#fff;color:#000;padding:0;font-size:11pt}
+  body>*:not(#print){display:none!important}
+  #print{display:block}
+  #print h1{font-size:17pt;margin-bottom:6px}
+  #print h2{font-size:12.5pt;margin:14px 0 4px;break-after:avoid}
+  #print table{width:100%;border-collapse:collapse;margin-bottom:6px}
+  #print th,#print td{border:1px solid #999;padding:4px 6px;text-align:start;vertical-align:top}
+  #print th{background:#eee}
+  #print tr{break-inside:avoid}
+  #print .pna{color:#888}
+  #print .pmeta{display:grid;grid-template-columns:1fr 1fr;gap:2px 16px;margin-bottom:8px}
+  #print .sig{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;margin-top:40px}
+  #print .sig div{border-top:1px solid #000;padding-top:4px}
+  @page{margin:14mm}
+}
+</style>
+</head>
+<body>
+<main id="view"></main>
+<nav id="nav"></nav>
+<div id="modal"></div>
+<div id="toast"></div>
+<div id="print"></div>
+<input type="file" id="photoIn" accept="image/*" capture="environment" hidden>
+<input type="file" id="restoreIn" accept="application/json,.json" hidden>
+<script>
+'use strict';
+/* ================= מאגר השאלות =================
+   דירוג: g = מצוין, y = סביר/פשרה, r = אזהרה, n = לא רלוונטי (לא נכנס לציון)
+   w (משקל): 3 = קריטי, 2 = רגיל, 1 = משני */
+const BANK = [
+{id:'demo', title:'פירוק, פינוי ותוכנית עבודה', qs:[
+ {id:'demo_who',w:3,t:'מי מפרק את המטבח הקיים',q:'מי מפרק את המטבח הקיים, כולל השיש והכיור?',
+  o:[['הנגר מפרק הכול, כולל שיש','g'],['הנגר מפרק ארונות בלבד','y'],['עלינו / שיפוצניק נפרד','y']],
+  tip:'עדיף גורם אחד שאחראי על כל הפירוק – כך אין ויכוח על מי שבר מה. אם השיש מפורק בנפרד, לתאם תאריך לפני יום הפירוק.'},
+ {id:'demo_waste',w:2,t:'פינוי פסולת',q:'פינוי הפסולת כלול במחיר? כולל השיש הישן והורדה מהבניין?',
+  o:[['כלול במלואו','g'],['כלול חלקית (בלי שיש)','y'],['לא כלול','r']],
+  tip:'שיש ישן כבד ופינויו עולה כסף. לוודא שזה כתוב בהצעת המחיר.'},
+ {id:'demo_util',w:3,t:'ניתוק מים, גז וחשמל',q:'מי מנתק את המים, הגז והחשמל לפני הפירוק ומחבר מחדש אחרי?',
+  o:[['הנגר מביא אינסטלטור / חשמלאי','g'],['עלינו, בתיאום מועד','y'],['לא סוכם','r']],
+  tip:'ניתוק וחיבור גז – רק על ידי טכנאי גז מוסמך. לוודא שיש ברזי ניתוק תקינים לפני יום הפירוק.'},
+ {id:'demo_protect',w:2,t:'הגנה וניקיון',q:'איך מגינים על הרצפה והקירות בזמן העבודה, ומי מנקה בסוף?',
+  o:[['כיסוי מלא + ניקיון בסיום','g'],['כיסוי חלקי','y'],['ללא הגנה','r']]},
+ {id:'demo_damage',w:3,t:'אחריות לנזקים',q:'מי אחראי אם נגרם נזק לרצפה, לקירות או לצנרת בזמן הפירוק או ההתקנה?',
+  o:[['הנגר אחראי (יש ביטוח)','g'],['״נבדוק לפי המקרה״','y'],['על הלקוח','r']],
+  tip:'מומלץ לצלם את המטבח, הרצפה והקירות לפני הפירוק – תיעוד מצב קיים.'},
+ {id:'demo_measure',w:3,t:'מדידה סופית',q:'מתי נעשית המדידה הסופית לייצור?',
+  o:[['באתר, אחרי פירוק והכנות','g'],['לפני הפירוק','y'],['לפי תוכנית בלבד','r']],
+  tip:'קירות שנחשפים אחרי פירוק לרוב לא ישרים. מדידה אחרי פירוק מונעת פערים ומילויים מכוערים.'},
+ {id:'demo_plan',w:3,t:'תוכנית עבודה',q:'נקבל תוכנית מפורטת עם מידות לאישור לפני הייצור?',
+  o:[['תוכנית ממוחשבת מפורטת','g'],['שרטוט ידני עם מידות','y'],['ללא תוכנית','r']],
+  tip:'תוכנית מאושרת היא הבסיס לכל טענה בהמשך. לבקש שתכלול חזיתות, חלוקת מגירות ומיקום מכשירים.'}
+]},
+{id:'body', title:'גוף הארונות ופנים', qs:[
+ {id:'body_low',w:3,t:'חומר ארגזים – תחתונים',q:'מאיזה חומר עשויים הארגזים התחתונים?',
+  o:[['סנדוויץ׳ ליבנה (בירץ׳)','g'],['סנדוויץ׳ אדום / אחר','g'],['MDF','y'],['שבבית / סיבית מלמין','r']],
+  tip:'בתחתונים יש מים ומשקל. סנדוויץ׳ (פלייווד) מחזיק ברגים ולחות הכי טוב. שבבית מתנפחת ממים ולא חוזרת לעצמה.'},
+ {id:'body_up',w:2,t:'חומר ארגזים – עליונים',q:'ומאיזה חומר עשויים הארגזים העליונים?',
+  o:[['סנדוויץ׳','g'],['MDF','y'],['שבבית / סיבית מלמין','y']],
+  tip:'בעליונים אין מגע ישיר עם מים, ולכן שבבית איכותית היא פשרה סבירה – בתנאי שהקנטים אטומים. מעל הכיריים והכיור עדיף סנדוויץ׳.'},
+ {id:'body_thick',w:2,t:'עובי דפנות',q:'מה עובי הדפנות של הארגזים?',
+  o:[['18 מ״מ ומעלה','g'],['17 מ״מ','y'],['16 מ״מ ומטה','r']],
+  tip:'18 מ״מ הוא הסטנדרט. דופן דקה מחזיקה פחות טוב את הברגים של הצירים והמסילות.'},
+ {id:'body_back',w:2,t:'גב הארון',q:'מה עובי גב הארונות ואיך הוא מחובר?',
+  o:[['8 מ״מ ומעלה, בחריץ או מוברג','g'],['5–6 מ״מ','y'],['גב דק 3 מ״מ מסומרר','r']],
+  tip:'גב חזק נותן לארון קשיחות ושומר עליו ישר לאורך שנים.'},
+ {id:'body_finish',w:1,t:'ציפוי פנים',q:'איך מצופים פנים הארונות?',
+  o:[['פורמייקה / מלמין בהיר (לבן, פשתן)','g'],['צבע / לכה','y'],['עץ חשוף בלי ציפוי','r']],
+  tip:'פשתן מסתיר שריטות וכתמים טוב יותר מלבן מבריק. פנים חשוף סופג לכלוך ולחות.'},
+ {id:'body_edge',w:2,t:'קנטים',q:'איזה קנט יש על חזית הדפנות והמדפים?',
+  o:[['ABS / PVC עבה, במכונה','g'],['קנט דק 0.4 מ״מ','y'],['בלי קנט / הדבקה ידנית','r']],
+  tip:'הקנט אוטם את החומר מפני לחות. קנט עבה שהודבק במכונה לא מתקלף.'},
+ {id:'body_sink',w:3,t:'ארון כיור',q:'ארון הכיור עשוי מחומר עמיד למים?',
+  o:[['סנדוויץ׳ ימי','g'],['סנדוויץ׳ רגיל','y'],['כמו שאר הארונות (שבבית)','r']],
+  tip:'ארון הכיור הוא הראשון שנהרס מנזילה. סנדוויץ׳ ימי עמיד ללחות לאורך שנים.'},
+ {id:'body_sinkbase',w:3,t:'הגנת תחתית ארון כיור',q:'יש הגנה לתחתית ארון הכיור מפני נזילות?',
+  o:[['מגש נירוסטה / אלומיניום אטום','g'],['פורמייקה + סיליקון','y'],['ללא','r']]},
+ {id:'body_legs',w:2,t:'רגליות',q:'על מה עומדים הארונות התחתונים?',
+  o:[['רגליות פלסטיק מתכווננות','g'],['בסיס עץ קבוע','y'],['ישירות על הרצפה','r']],
+  tip:'רגליות מתכווננות מאפשרות פילוס מדויק ומרחיקות את העץ ממים על הרצפה.'}
+]},
+{id:'front', title:'חזיתות ועיצוב', qs:[
+ {id:'front_mat',w:3,t:'חומר חזיתות',q:'מאיזה חומר עשויות החזיתות?',
+  o:[['פורמייקה (HPL)','g'],['נאנו – FENIX','g'],['צבע בתנור (MDF צבוע)','y'],['פולימר (ממברנה)','r']],
+  tip:'פולימר נוטה להתקלף מחום ואדים ליד התנור והמדיח. צבע בתנור יפה אבל רגיש לסדקים ולמכות בפינות. FENIX עמיד לטביעות אצבע ושריטות קלות.'},
+ {id:'front_core',w:1,t:'חומר בסיס לחזית',q:'על איזה חומר מודבקת או צבועה החזית?',
+  o:[['MDF','g'],['סנדוויץ׳','g'],['שבבית','r']]},
+ {id:'front_open',w:2,t:'שיטת פתיחה',q:'איך נפתחות הדלתות והמגירות?',
+  o:[['פרופיל גולה מאלומיניום','g'],['ידיות','g'],['חריץ CNC בחזית','y'],['טיפ-און (לחיצה)','y']],
+  tip:'חריץ CNC אוסף לכלוך ונשחק. טיפ-און לא מתאים למגירות כבדות ונפתח בטעות כשנשענים.'},
+ {id:'front_hinge',w:3,t:'צירים',q:'אילו צירים מותקנים בדלתות?',
+  o:[['מקוריים (Blum / Hettich / Grass) עם בלם','g'],['מותג אחר עם בלם','y'],['בלי בלם / לא ידוע','r']]},
+ {id:'front_plinth',w:2,t:'צוקל',q:'מה החומר של הצוקל (הפס התחתון)?',
+  o:[['אלומיניום עם גומיית אטימה','g'],['פורמייקה / PVC','y'],['עץ בלי אטם','r']],
+  tip:'הצוקל סופג מים משטיפת רצפה. אלומיניום עם גומייה לא נפגע.'},
+ {id:'front_sample',w:2,t:'אישור גוון',q:'נראה דוגמה פיזית של הגוון לפני הייצור?',
+  o:[['כן, נאשר דוגמה פיזית','g'],['לפי קטלוג בלבד','y'],['עוד לא נקבע','r']]}
+]},
+{id:'hw', title:'פרזול ומגירות', qs:[
+ {id:'hw_brand',w:3,t:'יצרן ודגם מסילות',q:'איזה יצרן ודגם של מסילות מגירה? אפשר שייכתב בחוזה?',
+  o:[['Blum / Hettich / Grass מקורי','g'],['מותג אחר מוכר','y'],['לא ידוע / חיקוי','r']],
+  tip:'Legrabox, Merivobox ו-Antaro הם של Blum; AvanTech ו-InnoTech של Hettich; Nova Pro ו-Vionaro של Grass. העיקר: מקורי, והדגם כתוב בחוזה.'},
+ {id:'hw_type',w:2,t:'סוג מגירה',q:'מה סוג המגירות?',
+  o:[['מגירה מתכתית מלאה (קופסה)','g'],['מסילה נסתרת עם דפנות עץ','y'],['מסילות כדוריות / גלגלים','r']]},
+ {id:'hw_load',w:3,t:'כושר נשיאה – סירים',q:'מה כושר הנשיאה של המסילות במגירות הסירים?',
+  o:[['60–70 ק״ג','g'],['40–50 ק״ג','y'],['30 ק״ג ומטה','r']],
+  tip:'מגירת סירים מלאה שוקלת בקלות 25–35 ק״ג. מסילה חזקה לא שוקעת עם השנים.'},
+ {id:'hw_full',w:2,t:'פתיחה מלאה ובלם',q:'המגירות נפתחות עד הסוף ונסגרות בשקט?',
+  o:[['פתיחה מלאה + טריקה שקטה','g'],['פתיחה חלקית עם בלם','y'],['בלי בלם','r']]},
+ {id:'hw_corner',w:2,t:'פתרון פינה',q:'איזה מנגנון יש בארון הפינתי?',
+  o:[['למאנס / מג׳יק קורנר','g'],['קרוסלה','y'],['פינה בלי מנגנון','r'],['אין פינה במטבח','n']]},
+ {id:'hw_lift',w:1,t:'פתיחה בעליונים',q:'איך נפתחים הארונות העליונים?',
+  o:[['מנגנון הרמה מקורי (כמו Aventos)','g'],['בוכנות גז פשוטות','y'],['דלתות ציר רגילות','n']]},
+ {id:'hw_bin',w:1,t:'פחי מחזור',q:'יש מגירת פחים נשלפת?',
+  o:[['מגירת פחים נשלפת','g'],['פח בודד על הדלת','y'],['לא כלול','r']]},
+ {id:'hw_cutlery',w:1,t:'אביזרים פנימיים',q:'מחיצות לסכו״ם ואביזרים פנימיים כלולים?',
+  o:[['כלולים','g'],['בתוספת תשלום','y'],['לא כלולים','r']]}
+]},
+{id:'top', title:'משטח עבודה וחיפוי', qs:[
+ {id:'top_who',w:3,t:'מי מספק את המשטח',q:'מי אחראי על משטח העבודה – הזמנה, מדידה והתקנה?',
+  o:[['הנגר מתאם, כלול במחיר','g'],['אנחנו מזמינים, הנגר מתאם','y'],['לא סוכם','r']],
+  tip:'כשגורם אחד אחראי, אין ״זה לא באשמתי״ כשמשהו לא מתאים.'},
+ {id:'top_mat',w:2,t:'חומר המשטח',q:'מה חומר המשטח?',
+  o:[['קוורץ (כמו אבן קיסר)','g'],['פורצלן / סינטר','g'],['גרניט / שיש טבעי','y'],['פורמייקה / עץ','y']],
+  tip:'שיש טבעי נכתם מחומצה (לימון, יין). פורצלן עמיד לחום, אבל הקנטים רגישים למכות.'},
+ {id:'top_measure',w:3,t:'מדידת המשטח',q:'מתי מודדים את המשטח?',
+  o:[['אחרי התקנת הארונות (שבלונה)','g'],['לפי תוכנית בלבד','r']]},
+ {id:'top_cut',w:2,t:'חיתוכים',q:'חיתוך לכיור ולכיריים וליטוש קנטים כלולים?',
+  o:[['כלול','g'],['בתוספת תשלום','y'],['לא דובר','r']]},
+ {id:'top_back',w:1,t:'חיפוי קיר',q:'מי מבצע את חיפוי הקיר שבין המשטח לעליונים?',
+  o:[['כלול / מתואם עם המשטח','g'],['בנפרד, באחריותנו','y'],['לא דובר','r']]},
+ {id:'top_sink',w:2,t:'התקנת כיור וברז',q:'מי מתקין ומחבר את הכיור, הברז והסיפון?',
+  o:[['הנגר / אינסטלטור מטעמו','g'],['אנחנו מביאים אינסטלטור','y'],['לא דובר','r']]}
+]},
+{id:'app', title:'מכשירים ותאורה', qs:[
+ {id:'app_dims',w:3,t:'מידות מכשירים',q:'קיבלת את הדגמים והמידות המדויקות של המכשירים (מקרר, תנור, מדיח, כיריים)?',
+  o:[['כן, לפי דגמים מדויקים','g'],['לפי מידות סטנדרט','y'],['לא דובר','r']],
+  tip:'לשלוח לנגר את דפי ההתקנה של היצרן. מקרר צריך מרווח אוורור בצדדים ומעל.'},
+ {id:'app_vent',w:3,t:'אוורור תנור ומקרר',q:'יש פתחי אוורור לתנור ולמקרר לפי הוראות היצרן?',
+  o:[['כן, לפי הוראות היצרן','g'],['לא דובר','r']],
+  tip:'בלי אוורור, מכשירים מתחממים, צורכים יותר חשמל ומתקלקלים מהר.'},
+ {id:'app_dish',w:2,t:'הגנת אדים למדיח',q:'יש הגנה מאדים בצדדים ומתחת למשטח מעל המדיח?',
+  o:[['כן','g'],['לא דובר','r'],['אין מדיח','n']],
+  tip:'האדים שיוצאים מהמדיח בסוף התוכנית מנפחים את הדפנות ואת קצה המשטח.'},
+ {id:'app_hood',w:2,t:'קולט אדים',q:'הארון מעל הכיריים מותאם לקולט האדים ולצינור היציאה?',
+  o:[['מותאם לדגם הקולט','g'],['פתרון כללי','y'],['לא דובר','r'],['לא רלוונטי','n']]},
+ {id:'app_led',w:1,t:'תאורה',q:'תאורת LED מתחת לעליונים כלולה? איפה יהיה השנאי?',
+  o:[['כלולה, שנאי מוסתר','g'],['בתוספת תשלום','y'],['לא כלולה','r'],['לא רלוונטי','n']]}
+]},
+{id:'terms', title:'מחיר, זמנים ואחריות', qs:[
+ {id:'t_quote',w:3,t:'הצעת מחיר',q:'נקבל הצעת מחיר בכתב, מפורטת לפי סעיפים?',
+  o:[['מפורטת לפי סעיפים','g'],['סכום כולל בלבד','y'],['בעל פה','r']]},
+ {id:'t_incl',w:3,t:'מה כלול במחיר',q:'המחיר כולל מע״מ, הובלה והתקנה?',
+  o:[['הכול כלול','g'],['חלק כלול','y'],['לא ברור','r']]},
+ {id:'t_time',w:3,t:'זמן ייצור',q:'כמה זמן ייקח הייצור מהמדידה, וזה ייכתב בחוזה?',
+  o:[['תאריך מחייב בחוזה','g'],['הערכה בעל פה','y'],['בלי התחייבות','r']]},
+ {id:'t_late',w:1,t:'איחור באספקה',q:'מה קורה אם יש איחור באספקה?',
+  o:[['פיצוי מוסכם בחוזה','g'],['״נסתדר״','y'],['לא דובר','r']]},
+ {id:'t_install',w:2,t:'משך ההתקנה',q:'כמה ימים נמשכת ההתקנה, וכמה זמן נהיה בלי מטבח?',
+  o:[['לוח זמנים ברור','g'],['הערכה כללית','y'],['לא ידוע','r']]},
+ {id:'t_warranty',w:3,t:'אחריות',q:'כמה שנות אחריות על הארונות ועל הפרזול, ומה היא כוללת?',
+  o:[['5 שנים ומעלה, בכתב','g'],['2–3 שנים','y'],['שנה או בלי','r']],
+  tip:'אחריות יצרן על הפרזול (Blum וכד׳) ארוכה בדרך כלל – לבקש בכתב. אחריות הנגר על העבודה עצמה נפרדת.'},
+ {id:'t_service',w:2,t:'ביקור כיוונון',q:'יש ביקור כיוונון לצירים ולמגירות אחרי ההתקנה?',
+  o:[['ביקור כלול אחרי כחודש','g'],['לפי קריאה','y'],['לא','r']]},
+ {id:'t_changes',w:2,t:'שינויים באמצע',q:'איך מתמחרים שינויים אחרי החתימה?',
+  o:[['מחיר בכתב לפני כל שינוי','g'],['בעל פה','y'],['לא דובר','r']]},
+ {id:'t_pay',w:3,t:'עיכבון לסיום',q:'מסכים שנשאיר 10–15% עד סיום כל התיקונים?',
+  o:[['כן, 10–15% עד גמר ליקויים','g'],['עיכבון קטן (כ-5%)','y'],['תשלום מלא בהתקנה','r']]},
+ {id:'t_invoice',w:2,t:'חשבונית',q:'תינתן חשבונית מס על כל תשלום?',
+  o:[['כן, על כל תשלום','g'],['רק בסוף','y'],['לא','r']]}
+]}
+];
+const QS = BANK.flatMap(c => c.qs.map(q => Object.assign(q, {cat: c})));
+const QMAP = Object.fromEntries(QS.map(q => [q.id, q]));
+const GV = {g:100, y:60, r:0};
+const UNK = '__unk', OTHER = '__other';
+
+/* ================= מצב ושמירה ================= */
+const KEY = 'lehmanKitchen.v1';
+function defaults(){
+  return {v:1,
+    project:{name:'מטבח חדש', carpenter:'', phone:'', total:0, notes:''},
+    answers:{},
+    payments:[
+      {t:'מקדמה בחתימה', p:15, paid:false, d:''},
+      {t:'אספקת חומרים / תחילת ייצור', p:35, paid:false, d:''},
+      {t:'הגעת הארונות והתקנה', p:35, paid:false, d:''},
+      {t:'יתרת ביטחון – אחרי סיום ליקויים', p:15, paid:false, d:'', lock:true}],
+    dates:[
+      {t:'חתימת הסכם', d:'', done:false},
+      {t:'מדידה סופית', d:'', done:false},
+      {t:'פירוק המטבח הקיים', d:'', done:false},
+      {t:'אספקה והתקנת ארונות', d:'', done:false},
+      {t:'מדידה והתקנת משטח', d:'', done:false},
+      {t:'ביקור כיוונון', d:'', done:false}],
+    punch:[]};
+}
+function load(){
+  try{ const s = JSON.parse(localStorage.getItem(KEY)); if (s && s.v) return Object.assign(defaults(), s); }catch(e){}
+  return defaults();
+}
+let S = load();
+let saveT;
+function save(){ clearTimeout(saveT); saveT = setTimeout(saveNow, 250); }
+function saveNow(){ clearTimeout(saveT); try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){ toast('⚠️ שגיאה בשמירה'); } }
+addEventListener('pagehide', saveNow);
+document.addEventListener('visibilitychange', () => { if (document.hidden) saveNow(); });
+if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(()=>{});
+
+/* תמונות – IndexedDB */
+const idb = (() => {
+  let p;
+  const db = () => p || (p = new Promise((res, rej) => {
+    const r = indexedDB.open('lehman-kitchen', 1);
+    r.onupgradeneeded = () => r.result.createObjectStore('photos');
+    r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error);
+  }));
+  const tx = (mode, fn) => db().then(d => new Promise((res, rej) => {
+    const t = d.transaction('photos', mode); const r = fn(t.objectStore('photos'));
+    t.oncomplete = () => res(r && r.result); t.onerror = () => rej(t.error);
+  }));
+  return {get:k => tx('readonly', s => s.get(k)), set:(k, v) => tx('readwrite', s => s.put(v, k)),
+          del:k => tx('readwrite', s => s.delete(k)), clear:() => tx('readwrite', s => s.clear())};
+})();
+
+/* ================= עזרים ================= */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const today = () => { const d = new Date(); return new Date(d - d.getTimezoneOffset()*6e4).toISOString().slice(0,10); };
+const fmtDate = s => s ? s.split('-').reverse().join('/') : '';
+const money = n => '₪' + Math.round(+n || 0).toLocaleString('he-IL');
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+function toast(msg){ const t = $('#toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('on'), 2200); }
+function modal(html){ const m = $('#modal'); m.innerHTML = '<div class="sheet">' + html + '</div>'; m.classList.add('on'); }
+function closeModal(){ const m = $('#modal'); m.classList.remove('on'); m.innerHTML = ''; }
+$('#modal').addEventListener('click', e => { if (e.target.id === 'modal') closeModal(); });
+
+/* ================= ציון ================= */
+function ansOf(q){ return S.answers[q.id]; }
+// g/y/r/n לבחירה רגילה, u = לבירור, o = אחר, null = לא נענה
+function gradeOf(q){
+  const a = ansOf(q); if (!a || !a.o) return null;
+  if (a.o === UNK) return 'u'; if (a.o === OTHER) return 'o';
+  const opt = q.o.find(x => x[0] === a.o); return opt ? opt[1] : null;
+}
+function answerLabel(q){
+  const a = ansOf(q); if (!a || !a.o) return '';
+  return a.o === UNK ? 'לא יודע / יבדוק' : a.o === OTHER ? 'אחר' : a.o;
+}
+function stats(qs = QS){
+  let s = 0, w = 0, answered = 0; const c = {g:0,y:0,r:0,u:0,o:0,n:0};
+  for (const q of qs){ const g = gradeOf(q); if (!g) continue; answered++; c[g]++;
+    if (g in GV){ s += q.w * GV[g]; w += q.w; } }
+  return {score: w ? Math.round(s / w) : null, answered, total: qs.length, c};
+}
+const scoreGrade = p => p == null ? 'x' : p >= 80 ? 'g' : p >= 60 ? 'y' : 'r';
+function ring(p){
+  const r = 42, C = 2*Math.PI*r, v = p == null ? 0 : p, col = {g:'var(--g)',y:'var(--y)',r:'var(--r)',x:'var(--line)'}[scoreGrade(p)];
+  return `<svg viewBox="0 0 100 100" class="ring" aria-label="ציון מפרט"><circle cx="50" cy="50" r="${r}" class="rbg"/>`+
+    `<circle cx="50" cy="50" r="${r}" class="rfg" stroke="${col}" stroke-dasharray="${C*v/100} ${C}" transform="rotate(-90 50 50)"/>`+
+    `<text x="50" y="58" text-anchor="middle">${p == null ? '—' : p + '%'}</text></svg>`;
+}
+const openPunch = () => S.punch.filter(p => !p.done).length;
+
+/* ================= ניווט ================= */
+let tab = 'home';
+const TABS = [['home','🏠','בית'],['meet','🎯','פגישה'],['spec','📋','מפרט'],['pay','💰','תשלומים'],['punch','🔧','ליקויים']];
+function go(t){ tab = t; render(); scrollTo(0, 0); }
+function render(){
+  $('#nav').innerHTML = TABS.map(([k,i,l]) => `<button data-act="nav" data-t="${k}" class="${tab===k?'on':''}"><b>${i}</b>${l}${k==='punch'&&openPunch()?` (${openPunch()})`:''}</button>`).join('');
+  $('#view').innerHTML = ({home:viewHome, meet:viewMeet, spec:viewSpec, pay:viewPay, punch:viewPunch})[tab]();
+  if (tab === 'punch') loadThumbs();
+}
+
+/* ================= בית ================= */
+function viewHome(){
+  const p = S.project, st = stats();
+  const reds = QS.filter(q => gradeOf(q) === 'r'), unks = QS.filter(q => gradeOf(q) === 'u');
+  const paid = S.payments.filter(x => x.paid).reduce((a, x) => a + x.p, 0);
+  const datesDone = S.dates.filter(d => d.done).length;
+  const next = S.dates.find(d => !d.done);
+  const wa = waNum(p.phone);
+  const li = (q, extra='') => `<li><button data-act="jump" data-q="${q.id}"><span class="dot g-${gradeOf(q)}"></span><span class="grow"><b>${esc(q.t)}</b> <span class="muted">– ${esc(answerLabel(q))}</span>${extra}</span></button></li>`;
+  return `
+  <div class="card proj">
+    <div class="row"><h1 class="grow">${esc(p.name || 'מטבח חדש')}</h1><button class="btn sm" data-act="editProj">✏️ עריכה</button></div>
+    <div class="muted">${p.carpenter ? 'נגר: ' + esc(p.carpenter) : 'לא הוזנו פרטי נגר'}${p.total ? ' · ' + money(p.total) : ''}</div>
+    ${p.phone ? `<div class="grid2" style="margin-top:10px"><a class="btn" href="tel:${esc(p.phone)}">📞 חיוג</a><a class="btn" href="https://wa.me/${wa}" target="_blank" rel="noopener">💬 וואטסאפ</a></div>` : ''}
+  </div>
+  <button class="btn pri big" data-act="startMeet" style="margin-bottom:12px">▶ התחל מצב פגישה</button>
+  <div class="card">
+    <div class="score">${ring(st.score)}
+      <div><h2 class="sec">ציון איכות המפרט</h2>
+        <div class="muted small">נענו ${st.answered} מתוך ${st.total} שאלות</div>
+        <div class="counts">
+          <span class="cnt g-g"><span class="dot"></span>${st.c.g}</span><span class="cnt g-y"><span class="dot"></span>${st.c.y}</span>
+          <span class="cnt g-r"><span class="dot"></span>${st.c.r}</span><span class="cnt g-u">❓ ${st.c.u}</span>
+        </div></div></div>
+    ${reds.length ? `<h2 class="sec" style="margin-top:12px">🔴 נורות אדומות (${reds.length})</h2><ul class="list">${reds.map(q => li(q)).join('')}</ul>` : ''}
+    ${unks.length ? `<h2 class="sec" style="margin-top:12px">❓ הנגר צריך לבדוק (${unks.length})</h2><ul class="list">${unks.map(q => li(q, ansOf(q).note ? `<br><span class="small muted">${esc(ansOf(q).note)}</span>` : '')).join('')}</ul>` : ''}
+  </div>
+  <div class="card">
+    <div class="row"><b class="grow">💰 תשלומים</b><span class="muted small">${S.project.total ? money(S.project.total*paid/100) + ' מתוך ' + money(S.project.total) : paid + '%'}</span></div>
+    <div class="bar"><i style="width:${Math.min(100,paid)}%"></i></div>
+    <div class="row" style="margin-top:8px"><b class="grow">📅 לוח זמנים</b><span class="muted small">${datesDone}/${S.dates.length} שלבים</span></div>
+    <div class="bar"><i style="width:${S.dates.length ? datesDone/S.dates.length*100 : 0}%"></i></div>
+    ${next ? `<div class="small muted">הבא: ${esc(next.t)}${next.d ? ' – ' + fmtDate(next.d) : ''}</div>` : ''}
+    <div class="row" style="margin-top:8px"><b class="grow">🔧 ליקויים פתוחים</b><span class="${openPunch() ? 'tag' : 'muted small'}">${openPunch()}</span></div>
+  </div>
+  <div class="card">
+    <h2 class="sec">📤 ייצוא ושיתוף</h2>
+    <div class="grid2" style="margin-top:8px">
+      <button class="btn" data-act="print">📄 נספח מפרט (PDF)</button>
+      <button class="btn" data-act="share">💬 שליחת סיכום</button>
+    </div>
+    <div class="small muted" style="margin-top:6px">ב-PDF: בחלון ההדפסה בוחרים ״שמירה כ-PDF״.</div>
+  </div>
+  <div class="card">
+    <h2 class="sec">📝 הערות כלליות</h2>
+    <textarea data-f="project.notes" placeholder="כל מה שעלה בפגישה ולא שייך לשאלה מסוימת…">${esc(p.notes)}</textarea>
+  </div>
+  <div class="card">
+    <h2 class="sec">💾 גיבוי</h2>
+    <div class="small muted">הנתונים נשמרים במכשיר בלבד. כדאי לגבות אחרי כל פגישה ולשלוח את הקובץ לעצמך.</div>
+    <div class="grid2" style="margin-top:8px"><button class="btn" data-act="backup">💾 שמירת גיבוי</button><button class="btn" data-act="restore">📂 שחזור מגיבוי</button></div>
+    <button class="btn sm warn" data-act="reset" style="margin-top:10px">מחיקת כל הנתונים</button>
+  </div>`;
+}
+function waNum(ph){ let d = String(ph || '').replace(/\D/g, ''); if (d.startsWith('0')) d = '972' + d.slice(1); return d; }
+function editProj(){
+  const p = S.project;
+  modal(`<h2 style="margin-bottom:12px">פרטי הפרויקט</h2>
+    <label class="f"><span>שם הפרויקט</span><input type="text" id="e_name" value="${esc(p.name)}"></label>
+    <label class="f"><span>שם הנגר</span><input type="text" id="e_carp" value="${esc(p.carpenter)}"></label>
+    <label class="f"><span>טלפון הנגר</span><input type="tel" id="e_phone" value="${esc(p.phone)}" inputmode="tel"></label>
+    <label class="f"><span>מחיר כולל (₪)</span><input type="number" id="e_total" value="${p.total || ''}" inputmode="numeric"></label>
+    <div class="grid2"><button class="btn pri" data-act="saveProj">שמירה</button><button class="btn" data-act="closeModal">ביטול</button></div>`);
+}
+
+/* ================= מצב פגישה ================= */
+const M = {filter:'all', order:[], i:0};
+const FILTERS = [['all','כל השאלות לפי הסדר'],['crit','קריטיות קודם'],['open','רק מה שלא נענה'],['follow','לבירור (❓ ו-🔴)']];
+function buildOrder(f){
+  let qs = QS;
+  if (f === 'crit') qs = [...QS].sort((a, b) => b.w - a.w);
+  else if (f === 'open') qs = QS.filter(q => !gradeOf(q));
+  else if (f === 'follow') qs = QS.filter(q => ['u','r'].includes(gradeOf(q)));
+  return qs.map(q => q.id);
+}
+function startMeet(f, qid){
+  M.filter = f || M.filter; M.order = buildOrder(M.filter);
+  const i = qid ? M.order.indexOf(qid) : M.order.findIndex(id => !gradeOf(QMAP[id]));
+  M.i = Math.max(0, i); go('meet');
+}
+function optButtons(q, big){
+  const a = ansOf(q), cur = a && a.o, cls = big ? ' big' : '';
+  const b = (o, g, label) => `<button class="opt g-${g}${cls}${cur === o ? ' sel' : ''}" data-act="pick" data-q="${q.id}" data-o="${esc(o)}"><span class="dot"></span>${label}</button>`;
+  const main = q.o.map(([l, g]) => b(l, g, esc(l))).join('');
+  const extra = b(UNK, 'u', '❓ לא יודע / יבדוק') + b(OTHER, 'o', '✏️ אחר');
+  return big ? main + `<div class="mextra">${extra.replaceAll(' big', '')}</div>` : main + extra;
+}
+function viewMeet(){
+  if (!M.order.length && M.filter === 'all') M.order = buildOrder('all');
+  const sel = `<select data-act-change="mfilter">${FILTERS.map(([k, l]) => `<option value="${k}"${M.filter===k?' selected':''}>${l}</option>`).join('')}</select>`;
+  if (!M.order.length) return `<div class="mtop">${sel}</div><div class="card empty"><h2>אין שאלות בסינון הזה 👌</h2><p class="muted">בחר סינון אחר למעלה.</p></div>`;
+  M.i = Math.min(M.i, M.order.length - 1);
+  const q = QMAP[M.order[M.i]], a = ansOf(q) || {}, last = M.i === M.order.length - 1;
+  const done = M.order.filter(id => gradeOf(QMAP[id])).length;
+  return `
+  <div class="mtop">${sel}<span class="mcount">${M.i + 1} / ${M.order.length}</span></div>
+  <div class="bar"><i style="width:${done / M.order.length * 100}%"></i></div>
+  <div class="mcard" id="mcard">
+    <div class="mcat">${esc(q.cat.title)} ${q.w === 3 ? '<span class="tag">קריטי</span>' : ''}</div>
+    <h2 class="mq">${esc(q.q)}</h2>
+    ${q.tip ? `<button class="btn sm" data-act="tip">💡 הערת מומחה</button><div class="tip" hidden>${esc(q.tip)}</div>` : ''}
+    <div style="margin-top:10px">${optButtons(q, true)}</div>
+    <textarea data-note="${q.id}" placeholder="הערה / מחיר / מה הנגר אמר — אפשר להכתיב עם המיקרופון 🎤 במקלדת">${esc(a.note || '')}</textarea>
+  </div>
+  <div class="mnav">
+    <button class="btn" data-act="mprev" ${M.i ? '' : 'disabled'}>→ הקודם</button>
+    <button class="btn pri" data-act="mnext">${last ? 'סיום ✓' : 'הבא ←'}</button>
+  </div>`;
+}
+function mStep(d){
+  if (d > 0 && M.i >= M.order.length - 1){ toast('סיימת את השאלות בסינון הזה 👏'); go('home'); return; }
+  M.i = Math.max(0, Math.min(M.order.length - 1, M.i + d)); render(); scrollTo(0, 0);
+}
+// החלקה: ימינה = הבא, שמאלה = הקודם
+let sx = 0, sy = 0, sOk = false;
+document.addEventListener('touchstart', e => { const t = e.touches[0]; sx = t.clientX; sy = t.clientY; sOk = tab === 'meet' && !!e.target.closest('#mcard') && !e.target.closest('textarea'); }, {passive:true});
+document.addEventListener('touchend', e => {
+  if (!sOk) return; const t = e.changedTouches[0], dx = t.clientX - sx, dy = t.clientY - sy;
+  if (Math.abs(dx) > 70 && Math.abs(dx) > Math.abs(dy) * 1.5) mStep(dx > 0 ? 1 : -1);
+});
+
+/* ================= מפרט ================= */
+const openCats = new Set();
+function viewSpec(){
+  const st = stats();
+  return `<div class="card score">${ring(st.score)}<div><h2 class="sec">מפרט טכני</h2><div class="muted small">נענו ${st.answered}/${st.total}. לחיצה חוזרת על בחירה מבטלת אותה.</div></div></div>` +
+  BANK.map(c => {
+    const cs = stats(c.qs);
+    return `<details class="cat" data-cat="${c.id}" ${openCats.has(c.id) ? 'open' : ''}>
+      <summary><span class="grow">${esc(c.title)}</span><span class="muted small">${cs.answered}/${cs.total}</span>${cs.score != null ? `<span class="badge g-${scoreGrade(cs.score)}">${cs.score}%</span>` : ''}</summary>
+      ${c.qs.map(q => {
+        const a = ansOf(q) || {}, g = gradeOf(q) || 'x';
+        return `<div class="item g-${g}">
+          <div class="row"><b class="grow">${esc(q.t)} ${q.w === 3 ? '<span class="tag">קריטי</span>' : ''}</b>${q.tip ? '<button class="ibtn" data-act="tip" aria-label="הערת מומחה">i</button>' : ''}</div>
+          <div class="q">${esc(q.q)}</div>
+          ${q.tip ? `<div class="tip" hidden>${esc(q.tip)}</div>` : ''}
+          <div class="chips">${optButtons(q, false)}</div>
+          <input type="text" data-note="${q.id}" value="${esc(a.note || '')}" placeholder="הערה / מחיר">
+        </div>`;}).join('')}
+    </details>`;}).join('');
+}
+document.addEventListener('toggle', e => {
+  const d = e.target; if (!d.dataset || !d.dataset.cat) return;
+  d.open ? openCats.add(d.dataset.cat) : openCats.delete(d.dataset.cat);
+}, true);
+
+/* ================= תשלומים ולוח זמנים ================= */
+function viewPay(){
+  const total = +S.project.total || 0, sum = S.payments.reduce((a, x) => a + (+x.p || 0), 0);
+  const paidAmt = S.payments.filter(x => x.paid).reduce((a, x) => a + total * x.p / 100, 0), op = openPunch();
+  return `
+  <div class="card">
+    <label class="f"><span>מחיר כולל של העבודה (₪)</span><input type="number" inputmode="numeric" data-f="project.total" value="${total || ''}" placeholder="למשל 85000"></label>
+    <div class="row"><b class="grow">שולם ${money(paidAmt)}</b><span class="muted">נותר ${money(total - paidAmt)}</span></div>
+    <div class="bar"><i style="width:${total ? paidAmt / total * 100 : 0}%"></i></div>
+  </div>
+  <div class="card">
+    <h2 class="sec">שלבי תשלום</h2>
+    ${S.payments.map((x, i) => `
+      <div class="pay">
+        <div class="row"><input type="text" class="grow" data-f="payments.${i}.t" value="${esc(x.t)}" style="flex:1;width:auto"><button class="x" data-act="payDel" data-i="${i}" aria-label="מחיקה">✕</button></div>
+        <div class="row" style="margin-top:6px">
+          <input type="number" inputmode="numeric" data-f="payments.${i}.p" value="${x.p}" style="width:5.5em"> <span>%</span>
+          <b class="grow">${money(total * x.p / 100)}</b>
+          <button class="btn sm ${x.paid ? 'paid' : ''}" data-act="payToggle" data-i="${i}">${x.paid ? '✓ שולם ' + fmtDate(x.d) : (x.lock && op ? '🔒 ' : '') + 'לא שולם'}</button>
+        </div>
+        ${x.lock && op && !x.paid ? `<div class="alert r">נותרו ${op} ליקויים פתוחים – אין להעביר את יתרת ה-${x.p}%</div>` : ''}
+        ${x.lock && !op && !x.paid && S.punch.length ? `<div class="alert g">כל הליקויים תוקנו – אפשר לשחרר את היתרה</div>` : ''}
+      </div>`).join('')}
+    ${sum !== 100 ? `<div class="alert r">סך האחוזים ${sum}% – צריך להיות 100%</div>` : '<div class="small muted">סך הכול 100% ✓</div>'}
+    <button class="btn sm" data-act="payAdd" style="margin-top:8px">+ הוספת שלב תשלום</button>
+  </div>
+  <div class="card">
+    <h2 class="sec">📅 לוח זמנים</h2>
+    ${S.dates.map((d, i) => `
+      <div class="drow ${d.done ? 'done' : ''}">
+        <input type="checkbox" data-f="dates.${i}.done" ${d.done ? 'checked' : ''} aria-label="בוצע">
+        <input type="text" data-f="dates.${i}.t" value="${esc(d.t)}">
+        <input type="date" data-f="dates.${i}.d" value="${esc(d.d)}">
+        <button class="x" data-act="dateDel" data-i="${i}" aria-label="מחיקה">✕</button>
+      </div>`).join('')}
+    <button class="btn sm" data-act="dateAdd" style="margin-top:8px">+ הוספת שלב</button>
+  </div>`;
+}
+
+/* ================= ליקויים ================= */
+let pendingPhoto = null, pendingUrl = '';
+const urlCache = {};
+function viewPunch(){
+  const list = [...S.punch].sort((a, b) => a.done - b.done || b.at - a.at), op = openPunch();
+  return `
+  <div class="card">
+    <h2 class="sec">ליקוי חדש</h2>
+    <textarea id="pText" placeholder="מה הבעיה? (דלת עקומה, שריטה, מגירה לא נסגרת…)"></textarea>
+    ${pendingUrl ? `<img class="prev" src="${pendingUrl}" alt=""><button class="btn sm" data-act="clearPhoto">הסרת תמונה</button>` : ''}
+    <div class="grid2" style="margin-top:8px"><button class="btn" data-act="photo">📷 ${pendingUrl ? 'צילום מחדש' : 'צילום'}</button><button class="btn pri" data-act="punchAdd">+ הוספה</button></div>
+  </div>
+  ${S.punch.length ? `<div class="alert ${op ? 'r' : 'g'}">${op ? `${op} ליקויים פתוחים – יתרת התשלום נעולה` : 'כל הליקויים תוקנו ✓'}</div>` : ''}
+  ${list.map(p => `
+    <div class="card pitem ${p.done ? 'done' : ''}">
+      ${p.photo ? `<button class="thumb" data-act="viewPhoto" data-id="${p.id}"><img class="thumb" data-photo="${p.id}" alt="תמונה"></button>` : ''}
+      <div class="grow">
+        <div class="ptext">${esc(p.text) || '<span class="muted">(ללא תיאור)</span>'}</div>
+        <div class="small muted">נפתח ${fmtDate(p.date)}${p.done ? ' · תוקן ' + fmtDate(p.doneDate) : ''}</div>
+        <div class="row" style="margin-top:6px">
+          <button class="btn sm ${p.done ? '' : 'paid'}" data-act="punchToggle" data-id="${p.id}">${p.done ? '↺ פתיחה מחדש' : '✓ תוקן'}</button>
+          <button class="btn sm warn" data-act="punchDel" data-id="${p.id}">מחיקה</button>
+        </div>
+      </div>
+    </div>`).join('')}`;
+}
+async function photoUrl(id){
+  if (urlCache[id]) return urlCache[id];
+  const b = await idb.get(id); return b ? (urlCache[id] = URL.createObjectURL(b)) : '';
+}
+function loadThumbs(){ document.querySelectorAll('img[data-photo]').forEach(async img => { img.src = await photoUrl(img.dataset.photo); }); }
+async function compress(file){
+  const url = URL.createObjectURL(file);
+  try{
+    const img = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = url; });
+    const k = Math.min(1, 1280 / Math.max(img.naturalWidth, img.naturalHeight));
+    const c = document.createElement('canvas'); c.width = Math.round(img.naturalWidth * k); c.height = Math.round(img.naturalHeight * k);
+    c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+    return await new Promise(r => c.toBlob(r, 'image/jpeg', 0.72));
+  } finally { URL.revokeObjectURL(url); }
+}
+$('#photoIn').addEventListener('change', async e => {
+  const f = e.target.files[0]; e.target.value = ''; if (!f) return;
+  const text = $('#pText') ? $('#pText').value : '';
+  try{ pendingPhoto = await compress(f); }catch(err){ toast('לא הצלחתי לקרוא את התמונה'); return; }
+  if (pendingUrl) URL.revokeObjectURL(pendingUrl);
+  pendingUrl = URL.createObjectURL(pendingPhoto); render(); $('#pText').value = text;
+});
+
+/* ================= ייצוא ================= */
+function printHTML(){
+  const p = S.project, total = +p.total || 0;
+  let h = `<h1>נספח מפרט טכני להסכם עבודה</h1><div class="pmeta">
+    <div>פרויקט: <b>${esc(p.name)}</b></div><div>תאריך: ${fmtDate(today())}</div>
+    <div>נגר: <b>${esc(p.carpenter)}</b> ${esc(p.phone)}</div>${total ? `<div>מחיר כולל: <b>${money(total)}</b></div>` : ''}</div>`;
+  for (const c of BANK){
+    h += `<h2>${esc(c.title)}</h2><table><thead><tr><th style="width:28%">נושא</th><th style="width:34%">מה סוכם</th><th>הערות</th></tr></thead><tbody>` +
+      c.qs.map(q => { const a = ansOf(q) || {};
+        const v = !a.o ? '<span class="pna">לא נדון</span>' : a.o === UNK ? 'פתוח – הנגר יבדוק' : a.o === OTHER ? 'ראו הערה' : esc(a.o);
+        return `<tr><td>${esc(q.t)}</td><td>${v}</td><td>${esc(a.note || '')}</td></tr>`; }).join('') + '</tbody></table>';
+  }
+  h += `<h2>תנאי תשלום</h2><table><thead><tr><th>שלב</th><th>%</th><th>סכום</th></tr></thead><tbody>` +
+    S.payments.map(x => `<tr><td>${esc(x.t)}</td><td>${x.p}%</td><td>${total ? money(total * x.p / 100) : ''}</td></tr>`).join('') + '</tbody></table>';
+  h += `<h2>לוח זמנים</h2><table><thead><tr><th>שלב</th><th>תאריך יעד</th></tr></thead><tbody>` +
+    S.dates.map(d => `<tr><td>${esc(d.t)}</td><td>${fmtDate(d.d)}</td></tr>`).join('') + '</tbody></table>';
+  if (p.notes) h += `<h2>הערות נוספות</h2><p style="white-space:pre-wrap">${esc(p.notes)}</p>`;
+  h += `<div class="sig"><div>חתימת המזמין</div><div>חתימת הנגר</div><div>תאריך</div></div>`;
+  return h;
+}
+function summaryText(){
+  const p = S.project, L = [`*${p.name} – סיכום פגישה ${fmtDate(today())}*`];
+  if (p.carpenter) L.push('נגר: ' + p.carpenter);
+  for (const c of BANK){
+    const rows = c.qs.filter(q => ansOf(q) && ansOf(q).o && ansOf(q).o !== UNK);
+    if (!rows.length) continue;
+    L.push('', '*' + c.title + '*');
+    rows.forEach(q => { const a = ansOf(q); L.push(`• ${q.t}: ${a.o === OTHER ? '' : a.o}${a.note ? (a.o === OTHER ? '' : ' – ') + a.note : ''}`); });
+  }
+  const u = QS.filter(q => gradeOf(q) === 'u');
+  if (u.length){ L.push('', '*נשאר לבדוק:*'); u.forEach(q => L.push(`• ${q.t}${ansOf(q).note ? ' – ' + ansOf(q).note : ''}`)); }
+  if (p.notes) L.push('', '*הערות:*', p.notes);
+  return L.join('\n');
+}
+async function share(){
+  const text = summaryText();
+  if (navigator.share){ try{ await navigator.share({text}); return; }catch(e){ if (e.name === 'AbortError') return; } }
+  try{ await navigator.clipboard.writeText(text); toast('הסיכום הועתק – אפשר להדביק בוואטסאפ'); }
+  catch(e){ modal(`<h2>סיכום</h2><textarea style="min-height:50vh">${esc(text)}</textarea><button class="btn" data-act="closeModal">סגירה</button>`); }
+}
+const blobToData = b => new Promise(r => { const f = new FileReader(); f.onload = () => r(f.result); f.readAsDataURL(b); });
+async function backup(){
+  saveNow();
+  const photos = {};
+  for (const p of S.punch) if (p.photo){ const b = await idb.get(p.id); if (b) photos[p.id] = await blobToData(b); }
+  const name = `גיבוי-מטבח-${today()}.json`;
+  const blob = new Blob([JSON.stringify({app:'lehman-kitchen', savedAt:new Date().toISOString(), state:S, photos})], {type:'application/json'});
+  const file = new File([blob], name, {type:'application/json'});
+  if (navigator.canShare && navigator.canShare({files:[file]})){ try{ await navigator.share({files:[file], title:name}); return; }catch(e){ if (e.name === 'AbortError') return; } }
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 5000); toast('קובץ הגיבוי הורד');
+}
+$('#restoreIn').addEventListener('change', async e => {
+  const f = e.target.files[0]; e.target.value = ''; if (!f) return;
+  let data; try{ data = JSON.parse(await f.text()); }catch(err){ toast('הקובץ לא תקין'); return; }
+  if (!data || data.app !== 'lehman-kitchen' || !data.state){ toast('זה לא קובץ גיבוי של האפליקציה'); return; }
+  if (!confirm('השחזור יחליף את כל הנתונים הנוכחיים בנתונים מהגיבוי. להמשיך?')) return;
+  await idb.clear();
+  for (const [id, d] of Object.entries(data.photos || {})) await idb.set(id, await (await fetch(d)).blob());
+  for (const k in urlCache) delete urlCache[k];
+  S = Object.assign(defaults(), data.state); saveNow(); go('home'); toast('הנתונים שוחזרו ✓');
+});
+
+/* ================= אירועים ================= */
+document.addEventListener('click', async e => {
+  const b = e.target.closest('[data-act]'); if (!b) return;
+  const d = b.dataset, i = +d.i;
+  switch (d.act){
+    case 'nav': if (d.t === 'meet' && !M.order.length) startMeet('all'); else go(d.t); break;
+    case 'startMeet': startMeet(); break;
+    case 'jump': startMeet('all', d.q); break;
+    case 'pick': {
+      const a = S.answers[d.q] || (S.answers[d.q] = {o:null, note:''});
+      a.o = a.o === d.o ? null : d.o; save();
+      const y = scrollY; render(); scrollTo(0, y);
+      if (a.o === OTHER){ const n = document.querySelector(`[data-note="${d.q}"]`); if (n) n.focus(); }
+      break; }
+    case 'tip': { const t = b.closest('.item, .mcard').querySelector('.tip'); t.hidden = !t.hidden; break; }
+    case 'mprev': mStep(-1); break;
+    case 'mnext': mStep(1); break;
+    case 'editProj': editProj(); break;
+    case 'saveProj':
+      Object.assign(S.project, {name:$('#e_name').value.trim(), carpenter:$('#e_carp').value.trim(), phone:$('#e_phone').value.trim(), total:+$('#e_total').value || 0});
+      save(); closeModal(); render(); break;
+    case 'closeModal': closeModal(); break;
+    case 'print': $('#print').innerHTML = printHTML(); window.print(); break;
+    case 'share': share(); break;
+    case 'backup': backup(); break;
+    case 'restore': $('#restoreIn').click(); break;
+    case 'reset':
+      if (confirm('למחוק את כל הנתונים? לא ניתן לבטל.') && confirm('בטוח? מומלץ לשמור גיבוי קודם.')){
+        await idb.clear(); S = defaults(); saveNow(); M.order = []; go('home'); }
+      break;
+    case 'payToggle': {
+      const x = S.payments[i];
+      if (!x.paid && x.lock && openPunch() && !confirm(`נותרו ${openPunch()} ליקויים פתוחים. לסמן בכל זאת ששולם?`)) break;
+      x.paid = !x.paid; x.d = x.paid ? today() : ''; save(); render(); break; }
+    case 'payDel': if (confirm('למחוק את שלב התשלום?')){ S.payments.splice(i, 1); save(); render(); } break;
+    case 'payAdd': S.payments.push({t:'שלב תשלום', p:0, paid:false, d:''}); save(); render(); break;
+    case 'dateDel': if (confirm('למחוק את השלב?')){ S.dates.splice(i, 1); save(); render(); } break;
+    case 'dateAdd': S.dates.push({t:'', d:'', done:false}); save(); render(); break;
+    case 'photo': $('#photoIn').click(); break;
+    case 'clearPhoto': { const text = $('#pText').value; URL.revokeObjectURL(pendingUrl); pendingPhoto = null; pendingUrl = ''; render(); $('#pText').value = text; break; }
+    case 'punchAdd': {
+      const text = $('#pText').value.trim();
+      if (!text && !pendingPhoto){ toast('כתוב תיאור או צלם תמונה'); break; }
+      const item = {id:uid(), text, photo:!!pendingPhoto, done:false, date:today(), at:Date.now()};
+      if (pendingPhoto){ await idb.set(item.id, pendingPhoto); urlCache[item.id] = pendingUrl; }
+      pendingPhoto = null; pendingUrl = '';
+      S.punch.push(item); saveNow(); render(); toast('הליקוי נוסף'); break; }
+    case 'punchToggle': { const p = S.punch.find(x => x.id === d.id); p.done = !p.done; p.doneDate = p.done ? today() : ''; save(); render(); break; }
+    case 'punchDel':
+      if (confirm('למחוק את הליקוי?')){ S.punch = S.punch.filter(x => x.id !== d.id); idb.del(d.id); save(); render(); }
+      break;
+    case 'viewPhoto': modal(`<img class="full" src="${await photoUrl(d.id)}" alt=""><button class="btn" data-act="closeModal" style="width:100%;margin-top:10px">סגירה</button>`); break;
+  }
+});
+document.addEventListener('input', e => {
+  const el = e.target;
+  if (el.dataset.note){ (S.answers[el.dataset.note] || (S.answers[el.dataset.note] = {o:null, note:''})).note = el.value; save(); }
+  else if (el.dataset.f){
+    const k = el.dataset.f.split('.'); let o = S; for (let j = 0; j < k.length - 1; j++) o = o[k[j]];
+    o[k[k.length - 1]] = el.type === 'checkbox' ? el.checked : el.type === 'number' ? (el.value === '' ? 0 : +el.value) : el.value;
+    save();
+  }
+});
+document.addEventListener('change', e => {
+  const el = e.target;
+  if (el.dataset.actChange === 'mfilter'){ M.filter = el.value; M.order = buildOrder(M.filter); M.i = 0; render(); return; }
+  if (el.dataset.f && tab === 'pay'){ const y = scrollY; render(); scrollTo(0, y); }
+});
+
+render();
+if ('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(() => {});
+</script>
+</body>
+</html>
